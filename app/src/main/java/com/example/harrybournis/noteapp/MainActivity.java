@@ -1,5 +1,6 @@
 package com.example.harrybournis.noteapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,14 +39,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCreatePage();
+            }
+        });
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Note.class, new NoteSerializer());
@@ -108,5 +108,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void showToast(int msgString) {
         Toast.makeText(this, msgString, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showCreatePage() {
+        Intent intent = new Intent(this, CreateNoteActivity.class);
+        startActivity(intent);
+        return;
     }
 }
