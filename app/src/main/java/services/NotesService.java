@@ -29,11 +29,13 @@ public class NotesService{
    private NotesApi notesApi;
 
    private NotesService() {
+      // Override the serializer/deserializer for GSON
       GsonBuilder gsonBuilder = new GsonBuilder();
       gsonBuilder.registerTypeAdapter(Note.class, new NoteSerializer());
       gsonBuilder.registerTypeAdapter(Note.class, new NoteDeserializer());
       Gson gson = gsonBuilder.create();
 
+      // Enable logging
       HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
       logging.setLevel(HttpLoggingInterceptor.Level.BODY);
       OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
