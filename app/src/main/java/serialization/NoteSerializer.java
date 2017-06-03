@@ -18,7 +18,7 @@ public class NoteSerializer implements JsonSerializer<Note> {
     public JsonElement serialize(Note note, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonNote = new JsonObject();
 
-        jsonNote.addProperty("id", note.getId());
+        //jsonNote.addProperty("id", note.getId());
         jsonNote.addProperty("content", note.getContent());
         jsonNote.addProperty("date", note.getDate().getTime());
 

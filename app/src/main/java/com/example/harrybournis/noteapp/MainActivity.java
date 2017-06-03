@@ -17,6 +17,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import models.Note;
@@ -27,6 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import serialization.NoteDeserializer;
 import serialization.NoteSerializer;
+import services.NotesService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,17 +52,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Note.class, new NoteSerializer());
-        gsonBuilder.registerTypeAdapter(Note.class, new NoteDeserializer());
-        Gson gson = gsonBuilder.create();
+//        GsonBuilder gsonBuilder = new GsonBuilder();
+//        gsonBuilder.registerTypeAdapter(Note.class, new NoteSerializer());
+//        gsonBuilder.registerTypeAdapter(Note.class, new NoteDeserializer());
+//        Gson gson = gsonBuilder.create();
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(NotesApi.BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        notesApi = retrofit.create(NotesApi.class);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(NotesApi.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        notesApi = retrofit.create(NotesApi.class);
+        NotesService notesService = NotesService.getIntance();
+        notesApi = notesService.getNotesApi();
 
         notesList = (ListView) findViewById(R.id.notes_list);
         getNotesFromServer();
@@ -93,7 +101,20 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("stuff", response.message());
                         if (response.isSuccessful()) {
                             notes = response.body();
-                            notesList.setAdapter(new ArrayAdapter<Note>(MainActivity.this, android.R.layout.simple_list_item_1, notes));
+                            List<String> noteList = new ArrayList<String>();
+
+                            Collections.sort(notes, new Comparator<Note>() {
+                                public int compare(Note note1, Note note2) {
+                                    return note1.getDate().compareTo(note2.getDate());
+                                }
+                            });
+
+                            for (Note note : notes) {
+                                SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy - hh:mm:ss");
+                                String result = dt1.format(note.getDate()) + "\n" + note.getContent();
+                                noteList.add(result);
+                            }
+                            notesList.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, noteList));
                         } else {
                             showToast(R.string.msg_get_notes_error);
                         }

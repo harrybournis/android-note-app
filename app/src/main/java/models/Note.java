@@ -19,6 +19,11 @@ public class Note {
         this.date = date;
     }
 
+    public Note(String content, Date date) {
+        this.content = content;
+        this.date = date;
+    }
+
     public String getContent() {
         return content;
     }
