@@ -31,5 +31,5 @@ public interface NotesApi {
     Call<Void> createNote(@Body Note note);
 
     @DELETE(NOTES_URL + "/{note_id}")
-    Response deleteNote(@Path("note_id") int noteId);
+    Call<Void> deleteNote(@Path("note_id") int noteId);
 }

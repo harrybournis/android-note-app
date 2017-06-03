@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Note> notes;
     private ListView notesList;
 
+    private final SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy - hh:mm:ss");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,17 +55,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        gsonBuilder.registerTypeAdapter(Note.class, new NoteSerializer());
-//        gsonBuilder.registerTypeAdapter(Note.class, new NoteDeserializer());
-//        Gson gson = gsonBuilder.create();
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(NotesApi.BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .build();
-//
-//        notesApi = retrofit.create(NotesApi.class);
 
         NotesService notesService = NotesService.getIntance();
         notesApi = notesService.getNotesApi();
@@ -71,34 +63,11 @@ public class MainActivity extends AppCompatActivity {
         getNotesFromServer();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     private void getNotesFromServer() {
         notesApi.getNotes()
                 .enqueue(new Callback<List<Note>>() {
                     @Override
                     public void onResponse(Call<List<Note>> call, Response<List<Note>> response) {
-                        Log.d("stuff", response.message());
                         if (response.isSuccessful()) {
                             notes = response.body();
                             List<String> noteList = new ArrayList<String>();
@@ -110,11 +79,21 @@ public class MainActivity extends AppCompatActivity {
                             });
 
                             for (Note note : notes) {
-                                SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy - hh:mm:ss");
-                                String result = dt1.format(note.getDate()) + "\n" + note.getContent();
+                                String result = dt.format(note.getDate()) + "\n" + note.getContent();
                                 noteList.add(result);
                             }
                             notesList.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, noteList));
+
+                            ListView notesListView = (ListView) findViewById(R.id.notes_list);
+                            notesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    if (notes != null) {
+                                        Note note = notes.get(position);
+                                        startActivity(ShowNoteActivity.getIntent(MainActivity.this, dt.format(note.getDate()), note.getContent(), note.getId()));
+                                    }
+                                }
+                            });
                         } else {
                             showToast(R.string.msg_get_notes_error);
                         }
@@ -134,6 +113,5 @@ public class MainActivity extends AppCompatActivity {
     private void showCreatePage() {
         Intent intent = new Intent(this, CreateNoteActivity.class);
         startActivity(intent);
-        return;
     }
 }

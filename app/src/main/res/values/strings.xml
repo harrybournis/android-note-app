@@ -5,7 +5,12 @@
     <string name="msg_server_error">Server Error</string>
     <string name="msg_note_created">Note Created</string>
     <string name="msg_note_creation_error">Failed to create note</string>
+    <string name="msg_note_deleted">Note Deleted</string>
+    <string name="msg_note_deletion_error">Failed to delete note</string>
     <string name="title_activity_create_note">CreateNoteActivity</string>
     <string name="create_new_note_label">Input you new Note:</string>
     <string name="create_new_note_hint">Enter Note...</string>
+    <string name="title_activity_show_note">ShowNoteActivity</string>
+    <string name="date_label">Date:</string>
+    <string name="content_label">Content:</string>
 </resources>

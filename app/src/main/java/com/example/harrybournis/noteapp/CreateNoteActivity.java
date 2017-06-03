@@ -47,6 +47,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     showToast(R.string.msg_note_created);
+                    showMainActivity();
                 } else {
                     Log.d("ERROR", response.message());
                     Log.d("ERROR", String.valueOf(response.code()));
@@ -66,4 +67,9 @@ public class CreateNoteActivity extends AppCompatActivity {
         Toast.makeText(this, msgString, Toast.LENGTH_SHORT).show();
     }
 
+    private void showMainActivity() {
+        Intent startIntent = new Intent(this, MainActivity.class);
+        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(startIntent);
+    }
 }
